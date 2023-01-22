@@ -1,1 +1,1 @@
-# hardhat-nft-basic-example
+# hardhat-nft-example
