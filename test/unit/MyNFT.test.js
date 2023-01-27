@@ -5,6 +5,7 @@ const { developmentChains } = require("../../helper-hardhat.config")
 !developmentChains.includes(network.name)
     ? describe.skip
     : describe("My NFT Unit Tests", () => {
+          const nftImageUri = "test"
           let myNFTFactory
           let myNFT
           let deployer
@@ -13,7 +14,7 @@ const { developmentChains } = require("../../helper-hardhat.config")
               accounts = await ethers.getSigners()
               deployer = accounts[0]
               myNFTFactory = await ethers.getContractFactory("MyNFT")
-              myNFT = await myNFTFactory.deploy()
+              myNFT = await myNFTFactory.deploy(nftImageUri)
               await myNFT.deployed()
           })
 
@@ -79,7 +80,7 @@ const { developmentChains } = require("../../helper-hardhat.config")
                   const tokeURI = await myNFT.tokenURI(0)
 
                   // THEN
-                  expect(tokeURI.toString()).contains("ipfs://")
+                  expect(tokeURI.toString()).contains(nftImageUri)
               })
           })
       })

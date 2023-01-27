@@ -3,13 +3,16 @@ pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract MyNFT is ERC721 {
-    string public constant TOKEN_URI =
-        "ipfs://bafkreia6pu2v77h6qdvgssaw5uljatm5hjdl3ec5d24k3isb2bna3nyfkq";
-    uint256 private s_tokenCounter; // if you have a collection of tokens on the same smart contract each of them needs their own unique token ID
+error MyNFT__AlreadyInitialized();
 
-    constructor() ERC721("MyNFT", "MNFT") {
+contract MyNFT is ERC721 {
+    uint256 private s_tokenCounter; // if you have a collection of tokens on the same smart contract each of them needs their own unique token ID
+    string internal s_tokeUri;
+    bool private s_initialized;
+
+    constructor(string memory tokenUri) ERC721("MyNFT", "MNFT") {
         s_tokenCounter = 0;
+        _initializeContract(tokenUri);
     }
 
     function mintNFT() public returns (uint256) {
@@ -21,7 +24,15 @@ contract MyNFT is ERC721 {
     function tokenURI(
         uint256 /*tokenId*/
     ) public view override returns (string memory) {
-        return TOKEN_URI;
+        return s_tokeUri; // using the same image for all minted tokens
+    }
+
+    function _initializeContract(string memory tokenUri) private {
+        if (s_initialized) {
+            revert MyNFT__AlreadyInitialized();
+        }
+        s_tokeUri = tokenUri;
+        s_initialized = true;
     }
 
     function getTokenCounter() public view returns (uint256) {
